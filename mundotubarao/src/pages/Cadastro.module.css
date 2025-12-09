@@ -1,0 +1,150 @@
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.back {
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 20px;
+  width: fit-content;
+  transition: 0.2s;
+}
+
+.back:hover {
+    transform: translateX(-5px);
+    }
+
+/* Lado esquerdo com imagem */
+.leftSide {
+  width: 50%;
+  background-image: url("../../public/cadastro.jpg"); 
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: high-quality;
+}
+
+
+
+/* Lado direito */
+.rightSide {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rightSide h1 {
+  font-size: 32px;
+  margin-bottom: 50px;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-family: Poppins, sans-serif;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 500px;
+  margin: 0 auto;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #dedede;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 12px;
+  background: #3B6388;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider:not(:empty)::before {
+  margin-right: 10px;
+}
+
+.divider:not(:empty)::after {
+  margin-left: 10px;
+}
+
+
+
+
+.googleBtn {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.registerText {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.registerText a {
+  color: #3B6388;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Texto final */
+.footerText {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.link {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}

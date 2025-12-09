@@ -1,0 +1,22 @@
+/* Remove margens padrão da página */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilo geral do App */
+.appWrapper {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Área principal entre Nav e Footer */
+.mainContent {
+  flex: 1;
+  margin-top: 90px; /* espaço para a navbar fixa */
+}
