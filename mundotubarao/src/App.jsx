@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import Principal from "./pages/Principal";
 import About from "./pages/About";
+import Admin from "./pages/Admin";
 import "./App.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/principal" element={<Principal />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </>
   );

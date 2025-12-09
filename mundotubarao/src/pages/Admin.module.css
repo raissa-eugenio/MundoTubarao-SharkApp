@@ -1,0 +1,187 @@
+/* BASE */
+.container {
+  min-height: 100vh;
+  background: #f2f5fa;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.headerContent {
+    width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* BOTÃO SAIR */
+.logoutButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #081f33, #0a2a43);
+  padding: 28px 40px;
+  color: #fff;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+
+.header p {
+  font-size: 14px;
+  color: #cfe1f3;
+  margin-top: 6px;
+}
+
+/* MAIN */
+.main {
+  margin: -20px auto 40px;
+  padding: 0 16px;
+  display: grid;
+  gap: 22px;
+  margin-top: 40px;
+}
+
+/* CARD BASE */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  width: 80%;
+  margin: 0 auto;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  margin-top: 20px;
+}
+
+.card h2 {
+  font-size: 26px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #081f33;
+  text-align: center;
+}
+
+/* FORM */
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* ✅ 2 colunas */
+  gap: 12px;
+}
+
+.form input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d9dde3;
+  background: #f7f9fc;
+  font-size: 14px;
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.form input::placeholder {
+  text-transform: capitalize;
+}
+
+.form button {
+  grid-column: span 2; /* ocupa as duas colunas */
+  justify-content: center;
+  margin: 0 auto;
+  align-items: center;
+  margin-top: 12px;
+  padding: 12px;
+  background: #1e88e5;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 300px;
+}
+
+.form button:hover {
+  background: #166fc1;
+}
+
+/* GRID CARDS */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.sharkCard {
+  background: #f7f9fc;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sharkCard strong {
+  font-size: 14px;
+  color: #081f33;
+}
+
+.sharkCard small {
+  font-size: 12px;
+  color: #555;
+}
+
+/* BADGE */
+.badge {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.perigoso {
+  background: #d63b37;
+}
+
+.pacifico {
+  background: #4caf50;
+}
+
+/* USERS */
+.users {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 20px;
+}
+
+.users li {
+  padding: 10px 0;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+/* EMPTY */
+.empty {
+  font-size: 14px;
+  color: #777;
+  font-style: italic;
+}
