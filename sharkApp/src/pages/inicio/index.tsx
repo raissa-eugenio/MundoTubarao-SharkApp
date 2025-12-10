@@ -3,10 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
   Image,
-  Button,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Animated, {
@@ -29,6 +28,7 @@ function FlipCard({
 
   const frontStyle = useAnimatedStyle(() => ({
     transform: [
+      { perspective: 1000 },
       {
         rotateY: `${interpolate(rotation.value, [0, 180], [0, 180])}deg`,
       },
@@ -37,6 +37,7 @@ function FlipCard({
 
   const backStyle = useAnimatedStyle(() => ({
     transform: [
+      { perspective: 1000 },
       {
         rotateY: `${interpolate(rotation.value, [0, 180], [180, 360])}deg`,
       },
@@ -49,7 +50,7 @@ function FlipCard({
   }
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={flip}>
+    <TouchableOpacity activeOpacity={0.95} onPress={flip}>
       <View style={styles.flipContainer}>
         <Animated.View style={[styles.card, styles.front, frontStyle]}>
           <Text style={styles.cardText}>{pergunta}</Text>
@@ -63,107 +64,110 @@ function FlipCard({
   );
 }
 
-/* ================= INICIO ================= */
+/* ================= INICIO (USANDO FLATLIST PARA PERMITIR SCROLL) ================= */
 export default function Inicio() {
   const navigation = useNavigation<any>();
 
+  // usamos um array com 1 item para forçar FlatList a renderizar o conteúdo
+  // e permitir que o layout interno (com absolute) seja medido corretamente.
+  const data = [1];
+
   return (
-<ScrollView
-  style={{ flex: 1 }}
-  contentContainerStyle={{ paddingBottom: 120 }}
->
+    <FlatList
+      data={data}
+      keyExtractor={(item, index) => index.toString()}
+      // renders the whole page as the single list item so FlatList can scroll
+      renderItem={() => (
+        <>
+          {/* HEADER */}
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/semfundo-claro.png")}
+                style={styles.logoImage}
+              />
+              <Text style={styles.logoText}>Mundo dos Tubarões</Text>
+            </View>
 
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* HEADER */}
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../../assets/semfundo-claro.png")}
-            style={styles.logoImage}
+          {/* DESTAQUES */}
+          <Text style={styles.sectionTitle}>Explorar em Destaque</Text>
+
+          <View style={styles.cardDestaque}>
+            <Image
+              source={require("../../assets/card1.jpg")}
+              style={styles.destaqueImage}
+            />
+            <View style={styles.overlay}>
+              <Text style={styles.destaqueTitulo}>Tubarão Baleia</Text>
+            </View>
+          </View>
+
+          <View style={styles.cardDestaque}>
+            <Image
+              source={require("../../assets/card2.jpg")}
+              style={styles.destaqueImage}
+            />
+            <View style={styles.overlay}>
+              <Text style={styles.destaqueTitulo}>Tubarão Branco</Text>
+            </View>
+          </View>
+
+          {/* CURIOSIDADES */}
+          <Text style={styles.sectionTitle}>Descubra Curiosidades</Text>
+
+          <FlipCard
+            pergunta="O que torna os tubarões tão importantes para o oceano?"
+            resposta="Eles mantêm o equilíbrio do ecossistema marinho."
           />
-          <Text style={styles.logoText}>Mundo dos Tubarões</Text>
-        </View>
 
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.loginText}>Login</Text>
-        </TouchableOpacity>
-      </View>
+          <FlipCard
+            pergunta="O que torna os tubarões predadores tão eficientes?"
+            resposta="Sensores elétricos, olfato apurado e rapidez."
+          />
 
-      {/* DESTAQUES */}
-      <Text style={styles.sectionTitle}>Explorar em Destaque</Text>
+          <FlipCard
+            pergunta="O que torna os tubarões tão temidos?"
+            resposta="Mitos criados pela mídia, não dados reais."
+          />
 
-      <View style={styles.cardDestaque}>
-        <Image
-          source={require("../../assets/card1.jpg")}
-          style={styles.destaqueImage}
-        />
-        <View style={styles.overlay}>
-          <Text style={styles.destaqueTitulo}>Tubarão Baleia</Text>
-        </View>
-      </View>
+          {/* FOOTER */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              Para saber mais curiosidades, cadastre-se ou faça login
+            </Text>
 
-      <View style={styles.cardDestaque}>
-        <Image
-          source={require("../../assets/card2.jpg")}
-          style={styles.destaqueImage}
-        />
-        <View style={styles.overlay}>
-          <Text style={styles.destaqueTitulo}>Tubarão Branco</Text>
-        </View>
-      </View>
+            <TouchableOpacity
+              style={styles.footerButton}
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text style={styles.footerButtonText}>Entrar</Text>
+            </TouchableOpacity>
 
-      {/* CURIOSIDADES */}
-      <Text style={styles.sectionTitle}>Descubra Curiosidades</Text>
-
-      <FlipCard
-        pergunta="O que torna os tubarões tão importantes para o oceano?"
-        resposta="Eles mantêm o equilíbrio do ecossistema marinho."
-      />
-
-      <FlipCard
-        pergunta="O que torna os tubarões predadores tão eficientes?"
-        resposta="Sensores elétricos, olfato apurado e rapidez."
-      />
-
-      <FlipCard
-        pergunta="O que torna os tubarões tão temidos?"
-        resposta="Mitos criados pela mídia, não dados reais."
-      />
-
-      {/* FOOTER */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Para saber mais curiosidades, cadastre-se ou faça login
-        </Text>
-
-        <TouchableOpacity
-          style={styles.footerButton}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={styles.footerButtonText}>Entrar</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.copy}>© 2025 Mundo dos Tubarões</Text>
-      </View>
-    </ScrollView>
+            <Text style={styles.copy}>© 2025 Mundo dos Tubarões</Text>
+          </View>
+        </>
+      )}
+      // espaçamento final para mostrar footer acima do bottom inset
+      contentContainerStyle={{ paddingBottom: 60, backgroundColor: "#f3f6fb" }}
+      showsVerticalScrollIndicator={false}
+    />
   );
 }
 
 /* ================= STYLES ================= */
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flex: 1,
     backgroundColor: "#f3f6fb",
   },
-
-  content: {
-    flexGrow: 1,
-    paddingBottom: 80,
-  },
-
 
   /* HEADER */
   header: {
@@ -231,14 +235,16 @@ const styles = StyleSheet.create({
 
   /* FLIP CARDS */
   flipContainer: {
-    height: 110,
+    height: 150,
     marginHorizontal: 16,
     marginBottom: 16,
+    position: "relative", // garante que o container ocupe espaço
   },
   card: {
     position: "absolute",
     width: "100%",
     height: "100%",
+    minHeight: 150,
     borderRadius: 16,
     justifyContent: "center",
     padding: 16,

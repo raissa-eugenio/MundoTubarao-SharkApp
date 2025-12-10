@@ -13,6 +13,11 @@ import { useScrollToTop } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import axios from "axios";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 const CARD_WIDTH = 170;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -20,6 +25,10 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 export default function Principal() {
    const navigation = useNavigation<any>();
   const [openCard, setOpenCard] = useState<number | null>(null);
+  const [tubaroes, setTubaroes] = useState<any[]>([]);
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
+
   const scrollRef = useRef<ScrollView>(null);
   useScrollToTop(scrollRef);
 
@@ -36,56 +45,98 @@ export default function Principal() {
     },
   ];
 
-  const dados = [
-    {
-      id: 1,
-      img: require("../../assets/card1.jpg"),
-      nome: "Tubarão Branco",
-      cientifico: "Carcharodon carcharias",
-      classificacao: "Perigoso",
-      caracteristicas: "Grande porte e dentes serrilhados",
-      habitat: "Águas temperadas",
-      populacao: "≈ 3.500",
-      curiosidades: "Detecta sangue a quilômetros",
-    },
-    {
-      id: 2,
-      img: require("../../assets/card2.jpg"),
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Pacífico",
-      caracteristicas: "Maior peixe do mundo",
-      habitat: "Águas tropicais",
-      populacao: "7.000 – 12.000",
-      curiosidades: "Inofensivo aos humanos",
-    },
-  ];
+  
 
   // divide em grupos de até 6 cards
-  const grupos = [];
+  
 
-  for (let i = 0; i < dados.length; i += 6) {
-    grupos.push(dados.slice(i, i + 6));
-  } useFocusEffect(
-    useCallback(() => {
-      scrollRef.current?.scrollTo({ y: 0, animated: false });
-    }, [])
-  );
+
+  useEffect(() => {
+    async function carregarTubaroes() {
+      try {
+        const token = await AsyncStorage.getItem("token");
+  
+        const res = await axios.get(
+          "http://192.168.56.1:3000/admin/cards",
+          {
+            headers: token ? { Authorization: token } : {},
+          }
+        );
+  
+        console.log("Dados recebidos:", res.data);
+        setTubaroes(res.data.cards || []);
+      } catch (error: any) {
+        console.log(
+          "Erro ao carregar do backend:",
+          error.response?.data || error.message
+        );
+      }
+    }
+  
+    carregarTubaroes();
+  }, []);
+  
+  const COLUNA_SIZE = 5;
+
+const colunas: any[][] = [];
+for (let i = 0; i < tubaroes.length; i += COLUNA_SIZE) {
+  colunas.push(tubaroes.slice(i, i + COLUNA_SIZE));
+}
+const getIniciais = (nome: string) => {
+  if (!nome) return "?";
+
+  const partes = nome.trim().split(" ");
+
+  if (partes.length === 1) {
+    return partes[0][0].toUpperCase();
+  }
+
+  return (
+    partes[0][0] + partes[partes.length - 1][0]
+  ).toUpperCase();
+};
+useEffect(() => {
+  async function carregarUsuario() {
+    const userSalvo = await AsyncStorage.getItem("user");
+    if (userSalvo) {
+      setUser(JSON.parse(userSalvo));
+    }
+  }
+
+  carregarUsuario();
+}, []);
+
 
   return (
     <ScrollView ref={scrollRef} style={styles.container}>
       {/* HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          Bem-vindo ao Mundo dos Tubarões
-        </Text>
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => navigation.replace("Inicio")}
-        >
-          <Text style={styles.headerButtonText}>Sair</Text>
-        </TouchableOpacity>
-      </View>
+<View style={styles.navbar}>
+  {/* LOGO + TÍTULO */}
+  <View style={styles.logoArea}>
+    <Text style={styles.logoText}>SharkApp</Text>
+  </View>
+
+
+  {/* USUÁRIO + SAIR */}
+  <View style={styles.usuario}>
+  <View style={styles.avatar}>
+  <Text style={styles.avatarText}>
+    {getIniciais(user?.name || "")}
+  </Text>
+</View>
+
+
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={async () => {
+        await AsyncStorage.clear();
+        navigation.replace("Inicio");
+      }}
+    >
+      <Text style={styles.headerButtonText}>Sair</Text>
+    </TouchableOpacity>
+  </View>
+</View>
 
       {/* CARDS TOPO (EM COLUNA) */}
       <View style={styles.cardDeck}>
@@ -100,63 +151,57 @@ export default function Principal() {
 
       <Text style={styles.descubra}>Descubra mais</Text>
 
-      {/* CARROSSEIS */}
-      {grupos.map((grupo, index) => (
-        <ScrollView
-          key={index}
-          horizontal
-          snapToInterval={CARD_WIDTH + 16}
-          decelerationRate="fast"
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.carousel}
-        >
-          {grupo.map((item) => {
-            const aberto = openCard === item.id;
+      {/* GRID – 2 COLUNAS */}
+<View style={styles.grid}>
+  {tubaroes.map((item) => {
+    const aberto = openCard === item.id;
 
-            return (
-              <TouchableOpacity
-                key={item.id}
-                activeOpacity={0.85}
-                onPress={() =>
-                  setOpenCard(aberto ? null : item.id)
-                }
+    return (
+      <TouchableOpacity
+        key={item.id}
+        activeOpacity={0.85}
+        onPress={() => setOpenCard(aberto ? null : item.id)}
+        style={styles.gridItem}
+      >
+        <View style={styles.flipCard}>
+          {!aberto ? (
+            <>
+              <Image source={{ uri: item.img }} style={styles.img} />
+              <Text style={styles.nome}>{item.nome}</Text>
+
+              <Text
+                style={[
+                  styles.classificacao,
+                  item.classificacao === "Perigoso"
+                    ? styles.perigoso
+                    : styles.pacifico,
+                ]}
               >
-                <View style={styles.flipCard}>
-                  {!aberto ? (
-                    <>
-                      <Image source={item.img} style={styles.img} />
-                      <Text style={styles.nome}>{item.nome}</Text>
+                {item.classificacao}
+              </Text>
+            </>
+          ) : (
+            <View style={styles.back}>
+              <Text style={styles.backTitle}>{item.nome}</Text>
+              <Text><Text style={styles.bold}>Científico:</Text> {item.cientifico}</Text>
+              <Text><Text style={styles.bold}>Características:</Text> {item.caracteristicas}</Text>
+              <Text><Text style={styles.bold}>Habitat:</Text> {item.habitat}</Text>
+              <Text><Text style={styles.bold}>População:</Text> {item.populacao}</Text>
+              <Text><Text style={styles.bold}>Curiosidades:</Text> {item.curiosidades}</Text>
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  })}
+</View>
+  
+</ScrollView>
 
-                      <Text
-                        style={[
-                          styles.classificacao,
-                          item.classificacao === "Perigoso"
-                            ? styles.perigoso
-                            : styles.pacifico,
-                        ]}
-                      >
-                        {item.classificacao}
-                      </Text>
-                    </>
-                  ) : (
-                    <View style={styles.back}>
-                      <Text style={styles.backTitle}>{item.nome}</Text>
-                      <Text><Text style={styles.bold}>Científico:</Text> {item.cientifico}</Text>
-                      <Text><Text style={styles.bold}>Características:</Text> {item.caracteristicas}</Text>
-                      <Text><Text style={styles.bold}>Habitat:</Text> {item.habitat}</Text>
-                      <Text><Text style={styles.bold}>População:</Text> {item.populacao}</Text>
-                      <Text><Text style={styles.bold}>Curiosidades:</Text> {item.curiosidades}</Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      ))}
-    </ScrollView>
   );
 }
+
+    
 
 /* ================= STYLES ================= */
 
@@ -165,6 +210,73 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f3f6fb",
   },
+
+  navbar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+    backgroundColor: "#0a2a43",
+  },
+  
+  logoArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  
+  logo: {
+    width: 32,
+    height: 32,
+    resizeMode: "contain",
+  },
+  
+  logoText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  
+  links: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  
+  link: {
+    color: "#fff",
+    fontSize: 14,
+  },
+  
+  usuario: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#1e88e5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
+  avatarText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  
+  headerButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  
+  headerButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  
 
   header: {
     padding: 20,
@@ -175,22 +287,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-headerButton: {
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-},
 
-headerButtonText: {
-  color: "#fff",
-  fontSize: 14,
-  fontWeight: "bold",
-},
 
   cardDeck: {
     padding: 16,
     gap: 16,
   },
-
   topCard: {
     backgroundColor: "#fff",
     borderRadius: 16,
@@ -224,20 +326,25 @@ headerButtonText: {
     marginVertical: 20,
   },
 
-  carousel: {
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingBottom: 25,
-    gap: 16,
   },
-
+  
+  gridItem: {
+    width: "48%", // ✅ 2 colunas perfeitas
+    marginBottom: 16,
+  },
+  
   flipCard: {
-    width: CARD_WIDTH,
     backgroundColor: "#fff",
     borderRadius: 16,
     padding: 10,
-    boxShadow: "0px 4px 10px rgba(0,0,0,0.15)",
-    elevation: 8,
+    elevation: 6,
   },
+  
 
   img: {
     width: "100%",

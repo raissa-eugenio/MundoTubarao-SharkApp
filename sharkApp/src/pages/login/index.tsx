@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,25 +7,66 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const navigation = useNavigation<any>();
 
- return (
-<ScrollView style={styles.container}>
+  // ✅ ADICIONADO
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // ✅ ADICIONADO
+  async function handleLogin() {
+    if (!email || !password) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post(
+        "http://192.168.56.1:3000/auth/login",
+        { email, password }
+      );
+
+      await AsyncStorage.setItem("user", JSON.stringify(res.data));
+
+      if (res.data.token) {
+        await AsyncStorage.setItem("token", res.data.token);
+      }
+
+      // mesmo comportamento do web
+      navigation.replace("Main");
+
+    } catch (err: any) {
+      Alert.alert(
+        "Erro",
+        err.response?.data?.error || "Email ou senha incorretos"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+
+  return (
+    <ScrollView style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
         <Image
           source={require("../../assets/login.jpg")}
-          style={styles.headerImage} resizeMode="cover"
+          style={styles.headerImage}
+          resizeMode="cover"
         />
 
-        {/* NAV */}
         <View style={styles.headerTop}>
-          {/* VOLTAR */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
@@ -33,7 +74,6 @@ export default function Login() {
             <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
 
-          {/* LOGO */}
           <View style={styles.logoContainer}>
             <Image
               source={require("../../assets/semfundo-escura.png")}
@@ -44,64 +84,55 @@ export default function Login() {
         </View>
       </View>
 
+      {/* CARD LOGIN */}
+      <View style={styles.loginCard}>
+        <Text style={styles.cardTitle}>Entrar</Text>
 
-    {/* CARD LOGIN */}
-    <View style={styles.loginCard}>
-      <Text style={styles.cardTitle}>Entrar</Text>
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          placeholderTextColor="#999"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={email}                 // ✅
+          onChangeText={setEmail}       // ✅
+        />
 
-      <Text style={styles.label}>
-        Acesse sua conta do Mundo dos Tubarões
-      </Text>
+        <TextInput
+          placeholder="Senha"
+          secureTextEntry
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={password}              // ✅
+          onChangeText={setPassword}    // ✅
+        />
 
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        placeholderTextColor="#999"
-      />
-
-      <TextInput
-        placeholder="Senha"
-        secureTextEntry
-        style={styles.input}
-        placeholderTextColor="#999"
-      />
-
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={() => navigation.replace("Main")}
-      >
-        <Text style={styles.primaryButtonText}>Entrar</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.orText}>ou continue com</Text>
-
-      <TouchableOpacity style={styles.googleButton}>
-        <Text style={styles.googleButtonText}>Google</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.footerSmall}>
-        Não tem conta?{" "}
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate("Cadastro")}
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={handleLogin}         // ✅
+          disabled={loading}
         >
-          Cadastre-se
+          <Text style={styles.primaryButtonText}>
+            {loading ? "Entrando..." : "Entrar"}
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.footerSmall}>
+          Não tem conta?{" "}
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate("Cadastro")}
+          >
+            Cadastre-se
+          </Text>
         </Text>
-      </Text>
-    </View>
+      </View>
 
-    {/* RODAPÉ */}
-    <View style={styles.bottomInfo}>
-      <Text style={styles.bottomTitle}>Explore o mundo marinho</Text>
-      <Text style={styles.bottomText}>
-        Conheça curiosidades, espécies fascinantes e descubra a importância
-        dos tubarões para o equilíbrio dos oceanos.
-      </Text>
-    </View>
-  </ScrollView>
-);
 
+    </ScrollView>
+  );
 }
+
 
 /* ================= STYLES ================= */
 const styles = StyleSheet.create({
@@ -163,6 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     elevation: 5,
+
   },
 
   cardTitle: {
@@ -231,22 +263,24 @@ const styles = StyleSheet.create({
   },
 
   /* FOOTER */
-  bottomInfo: {
+  footer: {
     backgroundColor: "#0a2a43",
-    marginTop: 20,
-    height: 200,
-    padding: 20,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 24,
   },
-
-  bottomTitle: {
-    color: "#fff",
-    fontWeight: "bold",
+  
+  footerText: {
+    color: "#ffffff",
+    fontSize: 12,
     marginBottom: 6,
-    fontSize: 20,
   },
-
-  bottomText: {
-    color: "#cdd8e3",
-    fontSize: 15,
+  
+  footerLink: {
+    color: "#1e90ff",
+    fontSize: 13,
+    fontWeight: "bold",
   },
+  
 });

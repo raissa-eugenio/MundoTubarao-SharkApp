@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,48 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 export default function Cadastro() {
   const navigation = useNavigation<any>();
+
+  // ✅ ADICIONADO
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // ✅ ADICIONADO
+  async function handleRegister() {
+    if (!name || !email || !password) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post("http://192.168.56.1:3000/auth/register", {
+        name,
+        email,
+        password,
+      });
+
+      Alert.alert("Sucesso", "Conta criada com sucesso!");
+      navigation.replace("Login");
+
+    } catch (err: any) {
+      Alert.alert(
+        "Erro",
+        err.response?.data?.error || "Erro ao cadastrar"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -23,9 +60,7 @@ export default function Cadastro() {
           resizeMode="cover"
         />
 
-        {/* NAV */}
         <View style={styles.headerTop}>
-          {/* VOLTAR */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
@@ -33,7 +68,6 @@ export default function Cadastro() {
             <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
 
-          {/* LOGO */}
           <View style={styles.logoContainer}>
             <Image
               source={require("../../assets/semfundo-escura.png")}
@@ -52,17 +86,22 @@ export default function Cadastro() {
           Cadastre-se para explorar o Mundo dos Tubarões
         </Text>
 
-        {/* ✅ NOVO CAMPO */}
         <TextInput
           placeholder="Nome completo"
           placeholderTextColor="#999"
           style={styles.input}
+          value={name}            // ✅
+          onChangeText={setName}  // ✅
         />
 
         <TextInput
           placeholder="Email"
           placeholderTextColor="#999"
+          autoCapitalize="none"
+          keyboardType="email-address"
           style={styles.input}
+          value={email}           // ✅
+          onChangeText={setEmail} // ✅
         />
 
         <TextInput
@@ -70,16 +109,25 @@ export default function Cadastro() {
           placeholderTextColor="#999"
           secureTextEntry
           style={styles.input}
+          value={password}           // ✅
+          onChangeText={setPassword} // ✅
         />
 
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>Cadastrar</Text>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={handleRegister}   // ✅
+          disabled={loading}
+        >
+          <Text style={styles.primaryButtonText}>
+            {loading ? "Cadastrando..." : "Cadastrar"}
+          </Text>
         </TouchableOpacity>
-         <Text style={styles.orText}>ou continue com</Text>
-        
-              <TouchableOpacity style={styles.googleButton}>
-                <Text style={styles.googleButtonText}>Google</Text>
-              </TouchableOpacity>
+
+        <Text style={styles.orText}>ou continue com</Text>
+
+        <TouchableOpacity style={styles.googleButton}>
+          <Text style={styles.googleButtonText}>Google</Text>
+        </TouchableOpacity>
 
         <Text style={styles.footerSmall}>
           Já tem conta?{" "}
@@ -89,15 +137,6 @@ export default function Cadastro() {
           >
             Fazer login
           </Text>
-        </Text>
-      </View>
-
-      {/* FOOTER */}
-      <View style={styles.bottomInfo}>
-        <Text style={styles.bottomTitle}>Vida marinha</Text>
-        <Text style={styles.bottomText}>
-          Junte-se a nós e descubra curiosidades incríveis sobre os tubarões e
-          os oceanos.
         </Text>
       </View>
     </ScrollView>
