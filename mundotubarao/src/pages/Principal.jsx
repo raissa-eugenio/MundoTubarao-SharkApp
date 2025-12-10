@@ -29,16 +29,16 @@ export default function Principal({ user }) {
   const cardsTopo = [
     {
       id: 1,
-      img: "/card1.jpg",
-      title: "Card title",
-      text: "This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Great_white_shark_south_africa.jpg/250px-Great_white_shark_south_africa.jpg?utm_source=chatgpt.com",
+      title: "Tubarão-branco",
+      text: "O tubarão-branco (Carcharodon carcharias) é um dos predadores mais conhecidos dos oceanos. Pode atingir mais de 6 metros de comprimento e pesar cerca de 2 toneladas. ",
       updated: "Last updated 3 mins ago",
     },
     {
       id: 2,
-      img: "/card2.jpg",
-      title: "Card title",
-      text: "This card has supporting text below as a natural lead-in to additional content.",
+      img: "https://upload.wikimedia.org/wikipedia/commons/3/39/Tiger_shark.jpg?utm_source=chatgpt.com",
+      title: "tubarão-tigre",
+      text: "O tubarão-tigre (Galeocerdo cuvier) é um dos maiores tubarões do mundo, podendo chegar a 5 metros de comprimento. Recebe esse nome por causa das listras escuras no corpo, mais visíveis quando jovem.",
       updated: "Last updated 3 mins ago",
     },
   ];

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import styles from "./Admin.module.css";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Admin() {
+  const navigate = useNavigate();
   const [cards, setCards] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
@@ -101,11 +104,16 @@ export default function Admin() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Painel Admin</h1>
+    <div className={styles.container}>
+      <div className={styles.header}><h1 >Painel Admin</h1>
+      <button className={styles.logoutButton} onClick={() => navigate("/")}>
+                Sair
+              </button>
+      </div>
+      
 
       {/* 🔹 FORMULÁRIO */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "30px" }}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input name="img" placeholder="URL da Imagem" value={form.img} onChange={handleChange} required />
         <input name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} required />
         <input name="cientifico" placeholder="Nome científico" value={form.cientifico} onChange={handleChange} />
@@ -115,22 +123,18 @@ export default function Admin() {
         <input name="populacao" placeholder="População" value={form.populacao} onChange={handleChange} />
         <input name="curiosidades" placeholder="Curiosidades" value={form.curiosidades} onChange={handleChange} />
 
-        <button type="submit">
+        <button type="submit" className={styles.logoutButton}>
           {editingId ? "Salvar Alterações" : "Criar Card"}
         </button>
       </form>
 
       {/* 🔹 LISTA DE CARDS */}
-      <h2>Cards Criados</h2>
+      <h2 className={styles.cardsheader}>Cards Criados</h2>
 
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+      <div className={styles.grid}>
         {cards.map(card => (
-          <div key={card.id} style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            width: "200px"
-          }}>
-            <img src={card.img} alt={card.nome} style={{ width: "100%" }} />
+          <div key={card.id} className={styles.sharkCard}>
+            <img src={card.img} alt={card.nome} />
             <h3>{card.nome}</h3>
 
             <button onClick={() => handleEdit(card)}>✏️ Editar</button>
