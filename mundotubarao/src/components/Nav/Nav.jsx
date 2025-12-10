@@ -15,7 +15,7 @@ export default function Nav({ nome = "Fulano da Silva" }) {
 
   const handleLogout = () => {
     localStorage.removeItem("user"); // limpa o usuário logado
-    navigate("/login");              // redireciona para login
+    navigate("/");              // redireciona para login
   };
 
   return (

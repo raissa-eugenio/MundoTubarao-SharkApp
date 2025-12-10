@@ -1,184 +1,68 @@
-/* ========== BASE ========== */
-.container {
-  min-height: 100vh;
-  background: #f2f5fa;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-/* Centralização padrão */
-.headerContent {
-  width: 90%;
+.container{
+  padding: 0px;
+  width: 100%;
   margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
-/* ========== BOTÃO SAIR ========== */
-.logoutButton {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  color: #fff;
-  padding: 8px 18px;
-  border-radius: 20px;
+.header{
+  margin-bottom: 30px;
+  display: flex;
+  width: 100%;
+  background-color: #3B6388;
+}
+
+.header h1{
+  margin-bottom: 30px;
+  display: flex;
+  margin-left: 40px;
+  color: white;
+  
+}
+
+.logoutButton{
+  margin-left: auto;
+  margin-right: 30px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #d90429;
+  color: white;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.logoutButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* ========== HEADER ========== */
-.header {
-  background: linear-gradient(135deg, #081f33, #0a2a43);
-  padding: 28px 40px;
-  color: #fff;
-}
-
-.header h1 {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.header p {
-  font-size: 14px;
-  color: #cfe1f3;
-  margin-top: 6px;
-}
-
-/* ========== MAIN GRID ========== */
-.main {
-  margin: -20px auto 40px;
-  padding: 0 16px;
-  display: grid;
-  gap: 22px;
+  transition: 0.2s;
+  width: 100px;
+  height: 40px;
   margin-top: 40px;
 }
 
-/* ========== CARD BASE ========== */
-.card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 20px 22px;
+.form{
   width: 80%;
   margin: 0 auto;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  margin-top: 20px;
+  
 }
 
-.card h2 {
-  font-size: 26px;
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #081f33;
-  text-align: center;
-}
-
-/* ========== FORM ========== */
-.form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.form input {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #d9dde3;
-  background: #f7f9fc;
-  font-size: 14px;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.form input::placeholder {
-  text-transform: capitalize;
-}
-
-.form button {
-  grid-column: span 2;
-  margin: 0 auto;
-  margin-top: 12px;
-  padding: 12px;
-  background: #1e88e5;
-  color: #fff;
-  border: none;
-  border-radius: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 300px;
-  transition: background 0.2s ease;
-}
-
-.form button:hover {
-  background: #166fc1;
-}
-
-/* ========== GRID DOS CARDS ========== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 14px;
-}
-
-.sharkCard {
-  background: #f7f9fc;
-  padding: 14px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+.cardsheader{
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  margin: 0 auto;
+  margin-top: 30px;
+  font-size: 30px;
 }
 
-.sharkCard strong {
-  font-size: 14px;
-  color: #081f33;
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 50px;
+  padding: 40px;
+  margin-left: 30px;
 }
 
-.sharkCard small {
-  font-size: 12px;
-  color: #555;
-}
-
-/* ========== BADGE ========== */
-.badge {
-  width: fit-content;
-  padding: 3px 8px;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.perigoso {
-  background: #d63b37;
-}
-
-.pacifico {
-  background: #4caf50;
-}
-
-/* ========== LISTA DE USUÁRIOS ========== */
-.users {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0 0;
-}
-
-.users li {
-  padding: 10px 0;
-  font-size: 14px;
-  color: #333;
-  border-bottom: 1px solid #eee;
-}
-
-/* ========== EMPTY STATE ========== */
-.empty {
-  font-size: 14px;
-  color: #777;
-  font-style: italic;
-  text-align: center;
+.sharkCard img{
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
 }

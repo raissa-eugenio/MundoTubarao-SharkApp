@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "./Principal.module.css";
 import Nav from "../components/Nav/Nav";
 import Footer from "../components/Footer/Footer";
 
 export default function Principal({ user }) {
-  const [openCard, setOpenCard] = useState(null);
+  const [cards, setCards] = useState([]); // cards do topo
+  const [tubaroes, setTubaroes] = useState([]); // grid dinâmico
 
-  // CARDS DO TOPO
-  const cards = [
+  const token = localStorage.getItem("token");
+
+  // Buscar cards do backend
+  useEffect(() => {
+    const loadCards = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/admin/cards", {
+          headers: token ? { Authorization: token } : {},
+        });
+        setTubaroes(res.data.cards || []);
+      } catch (err) {
+        console.log("Erro ao carregar cards:", err.response?.data?.error || err.message);
+      }
+    };
+    loadCards();
+  }, [token]);
+
+  // Cards do topo (fixos)
+  const cardsTopo = [
     {
       id: 1,
       img: "/card1.jpg",
@@ -24,72 +43,13 @@ export default function Principal({ user }) {
     },
   ];
 
-  // GRID DE TUBARÕES
-  const dados = [
-    {
-      id: 1,
-      img: "/card1.jpg",
-      nome: "Tubarão Branco",
-      cientifico: "Carcharodon carcharias",
-      classificacao: "Perigoso",
-      caracteristicas: "Grande porte, dentes serrilhados, rápido.",
-      habitat: "Águas temperadas e costeiras.",
-      populacao: "Cerca de 3.500 indivíduos.",
-      curiosidades: "Pode detectar uma gota de sangue a quilômetros."
-    },
-    {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
-    },
-    {
-      id: 3,
-      img: "/card3.jpg",
-      nome: "Tubarão Martelo",
-      cientifico: "Sphyrna mokarran",
-      classificacao: "Perigoso",
-      caracteristicas: "Cabeça em forma de 'T', visão ampla.",
-      habitat: "Águas tropicais e temperadas.",
-      populacao: "Desconhecida, espécies ameaçadas.",
-      curiosidades: "Pode nadar grandes distâncias em cardumes."
-    },
-    {
-      id: 4,
-      img: "/card4.jpg",
-      nome: "Tubarão Tigre",
-      cientifico: "Galeocerdo cuvier",
-      classificacao: "Perigoso",
-      caracteristicas: "Dentes serrilhados, predador oportunista.",
-      habitat: "Águas tropicais e subtropicais.",
-      populacao: "Cerca de 85.000 indivíduos.",
-      curiosidades: "Famoso por atacar navios e humanos."
-    },
-    {
-      id: 5,
-      img: "/card5.jpg",
-      nome: "Tubarão Cabeça Chata",
-      cientifico: "Carcharhinus leucas",
-      classificacao: "Perigoso",
-      caracteristicas: "Pode entrar em água doce, agressivo.",
-      habitat: "Rios e estuários tropicais.",
-      populacao: "Desconhecida, espécies vulneráveis.",
-      curiosidades: "Também chamado de 'Bull Shark'."
-    }
-  ];
-
   return (
     <div className={styles.container}>
       <Nav nome={user?.name} />
 
       {/* CARD DECK */}
       <div className={styles.cardDeck}>
-        {cards.map((card) => (
+        {cardsTopo.map((card) => (
           <div key={card.id} className={styles.card}>
             <img src={card.img} alt={card.title} className={styles.cardImg} />
             <div className={styles.cardBody}>
@@ -103,15 +63,14 @@ export default function Principal({ user }) {
         ))}
       </div>
 
-      {/* TÍTULO */}
       <h2 className={styles.descubra}>Descubra mais</h2>
 
       {/* GRID DINÂMICO */}
       <div className={styles.grid}>
-        {dados.map((item) => (
+        {tubaroes.map((item) => (
           <div key={item.id} className={styles.flipCard}>
             <div className={styles.flipInner}>
-              
+
               {/* FRENTE */}
               <div className={styles.flipFront}>
                 <img src={item.img} alt={item.nome} className={styles.img} />

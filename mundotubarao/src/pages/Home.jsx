@@ -4,9 +4,12 @@ import styles from "./Home.module.css";
 import Nav from "../components/Nav/Nav";
 import Footer from "../components/Footer/Footer";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Home() {
+  const navigate = useNavigate();
+
 const questions = [
   {
     question: "O que torna os tubarões tão incríveis no oceano?",
@@ -59,10 +62,12 @@ const questions = [
             <nav className={styles.navbar}>
                 <div className={styles.logo}><img src="../public/semfundo-claro.png" alt="logo" />Mundo dos Tubarões</div>
 
-                <button className={styles.btnlogin}><Link to="/login" className={styles.btnlogin}>
-                    Login
-                </Link>
-                </button>
+                <button
+  className={styles.btnlogin}
+  onClick={() => navigate("/login")}
+>
+  Login
+</button>
             </nav>
 
             <section className={styles.hero}>

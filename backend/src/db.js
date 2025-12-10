@@ -1,4 +1,3 @@
-// src/db.js
 import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -6,10 +5,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Banco no arquivo project-root/database.sqlite
 const db = new Database(path.join(__dirname, "..", "database.sqlite"));
 
-// Cria tabela users
+// Tabela users
 db.prepare(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +17,7 @@ db.prepare(`
   )
 `).run();
 
-// Cria tabela cards
+// Tabela cards
 db.prepare(`
   CREATE TABLE IF NOT EXISTS cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +32,7 @@ db.prepare(`
   )
 `).run();
 
-// Cria tabela admin (armazenamos email, senha e token aqui)
+// Tabela admin
 db.prepare(`
   CREATE TABLE IF NOT EXISTS admin (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,7 +42,7 @@ db.prepare(`
   )
 `).run();
 
-// Seed do admin (insere se não existe)
+// Seed admin
 const ADMIN_EMAIL = "admin@gmail.com";
 const ADMIN_PASSWORD = "121212";
 

@@ -1,12 +1,9 @@
-// src/pages/Admin.jsx
 import { useEffect, useState } from "react";
-import styles from "./Admin.module.css";
-
-const API = "http://localhost:3000";
 
 export default function Admin() {
   const [cards, setCards] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+
   const [form, setForm] = useState({
     img: "",
     nome: "",
@@ -15,203 +12,132 @@ export default function Admin() {
     caracteristicas: "",
     habitat: "",
     populacao: "",
-    curiosidades: "",
+    curiosidades: ""
   });
 
-  // ============================
-  //  PROTEÇÃO DE ROTA / LOGIN
-  // ============================
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const token = localStorage.getItem("token");
+  const TOKEN = "admin123"; // ⚠️ token simples provisório
 
-    if (!user || user.role !== "ADMIN" || !token) {
-      alert("Acesso negado!");
-      window.location.href = "/";
-      return;
-    }
+  // 🔹 CARREGAR CARDS
+ useEffect(() => {
+  fetch("http://localhost:3000/admin/cards")
+    .then(res => res.json())
+    .then(data => {
+      console.log(data); // 👀 debug
+      setCards(data.cards || []);
+    });
+}, []);
 
-    loadData();
-  }, []);
-
+  // 🔹 INPUT CONTROLADO
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  // ============================
-  //      CARREGAR DADOS
-  // ============================
-  async function loadData() {
-    try {
-      const token = localStorage.getItem("token");
-
-      const cardsRes = await fetch(`${API}/admin/cards`, {
-  headers: { Authorization: `Bearer ${token}` }
-});
-
-const usersRes = await fetch(`${API}/admin/users`, {
-  headers: { Authorization: `Bearer ${token}` }
-});
-
-      const usersData = await usersRes.json();
-      setUsers(usersData);
-
-    } catch (err) {
-      console.error("Erro ao carregar dados:", err);
-    }
+  // 🔹 EDITAR (puxa dados para o formulário)
+  function handleEdit(card) {
+    setForm({
+      img: card.img,
+      nome: card.nome,
+      cientifico: card.cientifico || "",
+      classificacao: card.classificacao || "",
+      caracteristicas: card.caracteristicas || "",
+      habitat: card.habitat || "",
+      populacao: card.populacao || "",
+      curiosidades: card.curiosidades || ""
+    });
+    setEditingId(card.id);
   }
 
-  // ============================
-  //      ADICIONAR CARD
-  // ============================
-  async function addCard(e) {
+  // 🔹 EXCLUIR
+  async function handleDelete(id) {
+    if (!window.confirm("Tem certeza que deseja excluir este card?")) return;
+
+    await fetch(`http://localhost:3000/admin/cards/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: TOKEN }
+    });
+
+    setCards(cards.filter(c => c.id !== id));
+  }
+
+  // 🔹 CRIAR OU ATUALIZAR
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    try {
-      const token = localStorage.getItem("token");
+    const url = editingId
+      ? `http://localhost:3000/admin/cards/${editingId}`
+      : "http://localhost:3000/admin/cards";
 
-      const res = await fetch(`${API}/admin/cards`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
+    const method = editingId ? "PUT" : "POST";
 
-      if (!res.ok) {
-        const erro = await res.text();
-        console.error("Erro do backend:", erro);
-        throw new Error("Erro ao adicionar card");
-      }
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN
+      },
+      body: JSON.stringify(form)
+    });
 
-      setForm({
-        img: "",
-        nome: "",
-        cientifico: "",
-        classificacao: "",
-        caracteristicas: "",
-        habitat: "",
-        populacao: "",
-        curiosidades: "",
-      });
+    const data = await res.json();
 
-      loadData();
-    } catch (err) {
-      console.error("Erro ao adicionar card:", err);
-      alert("Erro ao adicionar card");
-    }
-  }
-
-  // ============================
-  //      EXCLUIR CARD
-  // ============================
-  async function deleteCard(id) {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`${API}/admin/cards/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-
-      });
-
-      if (!res.ok) throw new Error("Erro ao deletar");
-
-      loadData();
-    } catch (err) {
-      console.error("Erro ao deletar card:", err);
-      alert("Erro ao deletar card");
-    }
-  }
-
-  // ============================
-  //           LOGOUT
-  // ============================
-  async function handleLogout() {
-    const token = localStorage.getItem("token");
-    try {
-      await fetch(`${API}/auth/logout`, {
-        method: "POST",
-       headers: { Authorization: `Bearer ${token}` }
-
-      });
-    } catch (err) {
-      console.warn("Erro no logout remoto", err);
+    if (editingId) {
+      setCards(cards.map(c => (c.id === editingId ? data.card : c)));
+    } else {
+      setCards([...cards, data.card]);
     }
 
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    window.location.href = "/";
+    // reset
+    setEditingId(null);
+    setForm({
+      img: "",
+      nome: "",
+      cientifico: "",
+      classificacao: "",
+      caracteristicas: "",
+      habitat: "",
+      populacao: "",
+      curiosidades: ""
+    });
   }
 
-  // ============================
-  //           LAYOUT
-  // ============================
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <div>
-            <h1>Painel Administrativo</h1>
-            <p>Gerencie o conteúdo do Mundo dos Tubarões</p>
+    <div style={{ padding: "20px" }}>
+      <h1>Painel Admin</h1>
+
+      {/* 🔹 FORMULÁRIO */}
+      <form onSubmit={handleSubmit} style={{ marginBottom: "30px" }}>
+        <input name="img" placeholder="URL da Imagem" value={form.img} onChange={handleChange} required />
+        <input name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} required />
+        <input name="cientifico" placeholder="Nome científico" value={form.cientifico} onChange={handleChange} />
+        <input name="classificacao" placeholder="Classificação" value={form.classificacao} onChange={handleChange} />
+        <input name="caracteristicas" placeholder="Características" value={form.caracteristicas} onChange={handleChange} />
+        <input name="habitat" placeholder="Habitat" value={form.habitat} onChange={handleChange} />
+        <input name="populacao" placeholder="População" value={form.populacao} onChange={handleChange} />
+        <input name="curiosidades" placeholder="Curiosidades" value={form.curiosidades} onChange={handleChange} />
+
+        <button type="submit">
+          {editingId ? "Salvar Alterações" : "Criar Card"}
+        </button>
+      </form>
+
+      {/* 🔹 LISTA DE CARDS */}
+      <h2>Cards Criados</h2>
+
+      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+        {cards.map(card => (
+          <div key={card.id} style={{
+            border: "1px solid #ccc",
+            padding: "10px",
+            width: "200px"
+          }}>
+            <img src={card.img} alt={card.nome} style={{ width: "100%" }} />
+            <h3>{card.nome}</h3>
+
+            <button onClick={() => handleEdit(card)}>✏️ Editar</button>
+            <button onClick={() => handleDelete(card.id)}>🗑️ Excluir</button>
           </div>
-          <button className={styles.logoutButton} onClick={handleLogout}>
-            Sair
-          </button>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-
-        {/* FORM DE NOVO CARD */}
-        <section className={styles.card}>
-          <h2>Novo Card</h2>
-
-          <form onSubmit={addCard} className={styles.form}>
-            {Object.keys(form).map((campo) => (
-              <input
-                key={campo}
-                name={campo}
-                placeholder={campo}
-                value={form[campo]}
-                onChange={handleChange}
-                required
-              />
-            ))}
-            <button type="submit">Adicionar</button>
-          </form>
-        </section>
-
-        {/* LISTA DE CARDS */}
-        <section className={styles.card}>
-          <h2>Cards Cadastrados</h2>
-
-          <div className={styles.grid}>
-            {cards.map((card) => (
-              <div key={`card-${card.id}`} className={styles.sharkCard}>
-                <strong>{card.nome}</strong>
-                <small>{card.cientifico}</small>
-                <button onClick={() => deleteCard(card.id)}>
-                  Excluir
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* LISTA DE USUÁRIOS */}
-        <section className={styles.card}>
-          <h2>Usuários Cadastrados</h2>
-
-          <ul className={styles.users}>
-            {users.map((u) => (
-              <li key={`user-${u.id}`}>🧑 {u.email}</li>
-            ))}
-          </ul>
-        </section>
-
-      </main>
+        ))}
+      </div>
     </div>
   );
 }

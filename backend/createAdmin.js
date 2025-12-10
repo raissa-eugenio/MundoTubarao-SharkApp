@@ -24,3 +24,5 @@ try {
 } catch (err) {
   console.log("Já existe um admin criado.");
 }
+
+
