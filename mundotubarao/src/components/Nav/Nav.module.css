@@ -12,6 +12,7 @@
   top: 0;
   right: 10px;
   z-index: 10;
+  margin: 0 auto;
   background-color: #3B6388;
 }
 .logo{
@@ -34,6 +35,21 @@
   gap: 20px;
   list-style: none;
   margin-right: 0px;
+}
+.headerButton {
+  padding: 6px 12px;
+  background-color: #ff4d4d; /* vermelho para logout */
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.headerButton:hover {
+  background-color: #ff1a1a;
 }
 
 .navLinks li {

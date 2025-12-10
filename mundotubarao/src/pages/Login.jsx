@@ -1,46 +1,74 @@
-import React from "react";
-import { jsxDEV } from "react/jsx-dev-runtime";
+// src/pages/Login.jsx
+import React, { useState } from "react";
 import styles from "./Login.module.css";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
-export default function Login({navigation}) {
+export default function Login({ setUser }) {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:3000/auth/login", {
+        email,
+        password,
+      });
+
+      // Salva usuário e token
+      localStorage.setItem("user", JSON.stringify(response.data));
+      if (response.data.token) localStorage.setItem("token", response.data.token);
+
+      setUser(response.data);
+
+      if (response.data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/principal");
+      }
+
+    } catch (err) {
+      alert(err.response?.data?.error || "Email ou senha incorretos");
+    }
+  }
+
   return (
     <div className={styles.loginPage}>
-      
-      {/* LADO ESQUERDO - IMAGEM */}
       <div className={styles.leftSide}>
-        <img src="/login.jpg" alt="Tubarão" />
+        <img src="../../public/login.jpg" alt="Tubarão" />
       </div>
 
-      {/* LADO DIREITO - FORMULÁRIO */}
       <div className={styles.rightSide}>
-        <div className={styles.back} onClick={() => navigate(-1)}>← Voltar</div>
+        <div className={styles.back} onClick={() => navigate("/")}>← Voltar</div>
         <h1>Entre já</h1>
 
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleLogin}>
           <label>Email</label>
-          <input type="email" placeholder="seuemail@email.com" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
           <label>Senha</label>
-          <input type="password" placeholder="••••••••" />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-          <a href="#" className={styles.forgotPassword}>Esqueceu sua senha?</a>
-
-          <button className={styles.loginBtn}><a href="/principal">Entrar</a></button>
-
-          <div className={styles.divider}>
-            <span>ou</span>
-          </div>
-
-          <button className={styles.googleBtn}>Entrar com Google</button>
+          <button className={styles.loginBtn}>Entrar</button>
         </form>
 
         <p className={styles.registerText}>
-          Não tem uma conta? <a href="/cadastro">Cadastre-se</a>
+          Não tem uma conta? <Link to="/cadastro">Cadastre-se</Link>
         </p>
-
       </div>
-
     </div>
   );
 }

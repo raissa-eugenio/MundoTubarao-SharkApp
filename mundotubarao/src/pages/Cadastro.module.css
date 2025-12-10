@@ -19,16 +19,15 @@
 
 /* Lado esquerdo com imagem */
 .leftSide {
-  width: 50%;
-  background-image: url("../../public/cadastro.jpg"); 
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  image-rendering: high-quality;
+  flex: 1;
+  height: 100%;
 }
 
+.leftSide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 
 /* Lado direito */

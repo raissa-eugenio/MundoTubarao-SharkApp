@@ -6,6 +6,7 @@ color: #1a1a1a;
 align-items: center;
 justify-content: center;
 margin: 0 auto;
+
 }
 .navbar {
   width: 100%;
@@ -17,6 +18,7 @@ margin: 0 auto;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
+  margin: 0 auto;
   right: 10px;
   z-index: 10;
 }
@@ -61,6 +63,8 @@ background: url("../../public/heroimage.png") center/cover no-repeat;
 display: flex;
 align-items: center;
 justify-content: center;
+margin-left: 0px;
+
 }
 
 
@@ -150,12 +154,7 @@ background: #005a85;
 }
 
 
-/* Perguntas */
-.questionsGrid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 20px;
-}
+
 
 .section2 h2 {
 padding: 40px 40px;
@@ -175,13 +174,14 @@ align-items: center;
 /* container do grid — força 4 colunas fixas */
 .questionsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 300px); /* 5 cards por linha */
-  gap: 30px;
+  grid-template-columns: repeat(5, 350px); /* 5 cards por linha */
+  gap: 10px;
   justify-content: center;
-  width: 100%;
+  width: 80%;
   margin-top: 40px;
   margin-bottom: 100px;
   box-sizing: border-box;
+  margin-left: 100px;
 }
 
 /* cards — tamanho fixo para combinar com as colunas do grid */

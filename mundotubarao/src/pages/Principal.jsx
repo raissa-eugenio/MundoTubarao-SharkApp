@@ -3,18 +3,20 @@ import styles from "./Principal.module.css";
 import Nav from "../components/Nav/Nav";
 import Footer from "../components/Footer/Footer";
 
-export default function Principal() {
+export default function Principal({ user }) {
   const [openCard, setOpenCard] = useState(null);
 
   // CARDS DO TOPO
   const cards = [
     {
+      id: 1,
       img: "/card1.jpg",
       title: "Card title",
       text: "This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.",
       updated: "Last updated 3 mins ago",
     },
     {
+      id: 2,
       img: "/card2.jpg",
       title: "Card title",
       text: "This card has supporting text below as a natural lead-in to additional content.",
@@ -22,7 +24,7 @@ export default function Principal() {
     },
   ];
 
-  // DADOS DO GRID – VOCÊ DEVE EDITAR PARA OS TUBARÕES
+  // GRID DE TUBARÕES
   const dados = [
     {
       id: 1,
@@ -46,140 +48,101 @@ export default function Principal() {
       populacao: "Entre 7.000 e 12.000 indivíduos.",
       curiosidades: "Apesar do tamanho, não representa risco aos humanos."
     },
-        {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
+    {
+      id: 3,
+      img: "/card3.jpg",
+      nome: "Tubarão Martelo",
+      cientifico: "Sphyrna mokarran",
+      classificacao: "Perigoso",
+      caracteristicas: "Cabeça em forma de 'T', visão ampla.",
+      habitat: "Águas tropicais e temperadas.",
+      populacao: "Desconhecida, espécies ameaçadas.",
+      curiosidades: "Pode nadar grandes distâncias em cardumes."
     },
-        {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
+    {
+      id: 4,
+      img: "/card4.jpg",
+      nome: "Tubarão Tigre",
+      cientifico: "Galeocerdo cuvier",
+      classificacao: "Perigoso",
+      caracteristicas: "Dentes serrilhados, predador oportunista.",
+      habitat: "Águas tropicais e subtropicais.",
+      populacao: "Cerca de 85.000 indivíduos.",
+      curiosidades: "Famoso por atacar navios e humanos."
     },
-         {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
-    },
-         {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
-    },
-         {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
-    },
-         {
-      id: 2,
-      img: "/card2.jpg",
-      nome: "Tubarão Baleia",
-      cientifico: "Rhincodon typus",
-      classificacao: "Inofensivo",
-      caracteristicas: "Maior peixe do mundo, alimentação por filtração.",
-      habitat: "Águas tropicais.",
-      populacao: "Entre 7.000 e 12.000 indivíduos.",
-      curiosidades: "Apesar do tamanho, não representa risco aos humanos."
-    },
+    {
+      id: 5,
+      img: "/card5.jpg",
+      nome: "Tubarão Cabeça Chata",
+      cientifico: "Carcharhinus leucas",
+      classificacao: "Perigoso",
+      caracteristicas: "Pode entrar em água doce, agressivo.",
+      habitat: "Rios e estuários tropicais.",
+      populacao: "Desconhecida, espécies vulneráveis.",
+      curiosidades: "Também chamado de 'Bull Shark'."
+    }
   ];
 
   return (
     <div className={styles.container}>
-      <Nav nome="Fulano da Silva" />
-
-  
+      <Nav nome={user?.name} />
 
       {/* CARD DECK */}
-     <div className={styles.cardDeck}>
-  {cards.slice(0, 2).map((card, index) => (
-    <div key={index} className={styles.card}>
-      <img src={card.img} alt={card.title} className={styles.cardImg} />
-
-      <div className={styles.cardBody}>
-        <h5 className={styles.cardTitle}>{card.title}</h5>
-        <p className={styles.cardText}>{card.text}</p>
-        <p className={styles.cardTextSmall}>
-          <small>{card.updated}</small>
-        </p>
+      <div className={styles.cardDeck}>
+        {cards.map((card) => (
+          <div key={card.id} className={styles.card}>
+            <img src={card.img} alt={card.title} className={styles.cardImg} />
+            <div className={styles.cardBody}>
+              <h5 className={styles.cardTitle}>{card.title}</h5>
+              <p className={styles.cardText}>{card.text}</p>
+              <p className={styles.cardTextSmall}>
+                <small>{card.updated}</small>
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
       {/* TÍTULO */}
       <h2 className={styles.descubra}>Descubra mais</h2>
 
-     {/* GRID DINÂMICO */}
-<div className={styles.grid}>
-  {dados.map((item) => (
-    <div key={item.id} className={styles.flipCard}>
-      <div className={styles.flipInner}>
-        
-        {/* FRENTE */}
-        <div className={styles.flipFront}>
-          <img src={item.img} alt={item.nome} className={styles.img} />
+      {/* GRID DINÂMICO */}
+      <div className={styles.grid}>
+        {dados.map((item) => (
+          <div key={item.id} className={styles.flipCard}>
+            <div className={styles.flipInner}>
+              
+              {/* FRENTE */}
+              <div className={styles.flipFront}>
+                <img src={item.img} alt={item.nome} className={styles.img} />
+                <h3 className={styles.nome}>{item.nome}</h3>
+                <span
+                  className={`${styles.classificacao} ${
+                    item.classificacao === "Perigoso"
+                      ? styles.perigoso
+                      : item.classificacao === "Pacífico"
+                      ? styles.pacifico
+                      : styles.atencao
+                  }`}
+                >
+                  {item.classificacao}
+                </span>
+              </div>
 
-          <h3 className={styles.nome}>{item.nome}</h3>
+              {/* VERSO */}
+              <div className={styles.flipBack}>
+                <h3>{item.nome}</h3>
+                <p><strong>Nome científico:</strong> {item.cientifico}</p>
+                <p><strong>Características:</strong> {item.caracteristicas}</p>
+                <p><strong>Habitat:</strong> {item.habitat}</p>
+                <p><strong>População:</strong> {item.populacao}</p>
+                <p><strong>Curiosidades:</strong> {item.curiosidades}</p>
+              </div>
 
-          <span
-            className={`${styles.classificacao} ${
-              item.classificacao === "Perigoso"
-                ? styles.perigoso
-                : item.classificacao === "Pacífico"
-                ? styles.pacifico
-                : styles.atencao
-            }`}
-          >
-            {item.classificacao}
-          </span>
-        </div>
-
-        {/* VERSO */}
-        <div className={styles.flipBack}>
-          <h3>{item.nome}</h3>
-
-          <p><strong>Nome científico:</strong> {item.cientifico}</p>
-          <p><strong>Características:</strong> {item.caracteristicas}</p>
-          <p><strong>Habitat:</strong> {item.habitat}</p>
-          <p><strong>População:</strong> {item.populacao}</p>
-          <p><strong>Curiosidades:</strong> {item.curiosidades}</p>
-        </div>
-
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
       <Footer />
     </div>

@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useScrollToTop } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
@@ -17,6 +18,7 @@ const CARD_WIDTH = 170;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function Principal() {
+   const navigation = useNavigation<any>();
   const [openCard, setOpenCard] = useState<number | null>(null);
   const scrollRef = useRef<ScrollView>(null);
   useScrollToTop(scrollRef);
@@ -77,6 +79,12 @@ export default function Principal() {
         <Text style={styles.headerTitle}>
           Bem-vindo ao Mundo dos Tubarões
         </Text>
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={() => navigation.replace("Inicio")}
+        >
+          <Text style={styles.headerButtonText}>Sair</Text>
+        </TouchableOpacity>
       </View>
 
       {/* CARDS TOPO (EM COLUNA) */}
@@ -162,11 +170,21 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#0a2a43",
   },
-  headerTitle: {
+ headerTitle: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
   },
+headerButton: {
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+},
+
+headerButtonText: {
+  color: "#fff",
+  fontSize: 14,
+  fontWeight: "bold",
+},
 
   cardDeck: {
     padding: 16,

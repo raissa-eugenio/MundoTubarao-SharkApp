@@ -1,11 +1,10 @@
 import React from "react";
-import styles from "./Nav.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import styles from "./Nav.module.css";
 
 export default function Nav({ nome = "Fulano da Silva" }) {
   const navigate = useNavigate();
 
-  // Função para pegar iniciais automaticamente
   const getIniciais = (nome) => {
     const partes = nome.trim().split(" ");
     if (partes.length === 1) return partes[0][0].toUpperCase();
@@ -13,6 +12,11 @@ export default function Nav({ nome = "Fulano da Silva" }) {
   };
 
   const iniciais = getIniciais(nome);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // limpa o usuário logado
+    navigate("/login");              // redireciona para login
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -28,10 +32,15 @@ export default function Nav({ nome = "Fulano da Silva" }) {
         <li><Link to="/about">Sobre</Link></li>
       </ul>
 
-      {/* AVATAR DO USUÁRIO */}
+      {/* AVATAR DO USUÁRIO E LOGOUT */}
       <div className={styles.usuario}>
         <div className={styles.avatar}>{iniciais}</div>
         <span className={styles.nomeUsuario}>{nome}</span>
+
+        {/* BOTÃO DE LOGOUT */}
+        <button className={styles.headerButton} onClick={handleLogout}>
+          Sair
+        </button>
       </div>
     </nav>
   );
