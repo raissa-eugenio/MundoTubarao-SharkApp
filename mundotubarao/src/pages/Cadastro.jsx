@@ -14,15 +14,14 @@ export default function Cadastro() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:3000/auth/register", {
+      await axios.post("http://localhost:3000/users/register", {
         name,
         email,
-        password,
+        password
       });
 
       alert("Conta criada com sucesso!");
       navigate("/login");
-
     } catch (err) {
       alert(err.response?.data?.error || "Erro ao cadastrar");
     }
@@ -30,13 +29,10 @@ export default function Cadastro() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.leftSide}>
+        <img src="/cadastro.jpg" alt="Tubarão" />
+      </div>
 
-           {/* LADO ESQUERDO */}
-           <div className={styles.leftSide}>
-             <img src="../../public/cadastro.jpg" alt="Tubarão" />
-           </div>
-
-      {/* DIREITA */}
       <div className={styles.rightSide}>
         <div className={styles.back} onClick={() => navigate(-1)}>
           ← Voltar
@@ -45,32 +41,36 @@ export default function Cadastro() {
         <h1 className={styles.title}>Cadastrar-se</h1>
 
         <form className={styles.form} onSubmit={handleRegister}>
-
           <label>Nome</label>
-          <input 
-            type="text" 
-            placeholder="Fulano da Silva" 
+          <input
+            type="text"
+            placeholder="Fulano da Silva"
             value={name}
             onChange={e => setName(e.target.value)}
+            required
           />
 
           <label>Email</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             placeholder="nome@gmail.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
+            required
           />
 
           <label>Senha</label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             placeholder="********"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            required
           />
 
-          <button className={styles.loginBtn}>Criar Conta</button>
+          <button className={styles.loginBtn} type="submit">
+            Criar Conta
+          </button>
         </form>
 
         <p className={styles.footerText}>
@@ -79,7 +79,6 @@ export default function Cadastro() {
             Vá para o Login
           </Link>
         </p>
-
       </div>
     </div>
   );

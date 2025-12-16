@@ -14,9 +14,11 @@ export default function Nav({ nome = "Fulano da Silva" }) {
   const iniciais = getIniciais(nome);
 
   const handleLogout = () => {
-    localStorage.removeItem("user"); // limpa o usuário logado
-    navigate("/");              // redireciona para login
+    localStorage.removeItem("user");
+    localStorage.removeItem("token"); // 👈 IMPORTANTE
+    navigate("/");
   };
+  
 
   return (
     <nav className={styles.navbar}>

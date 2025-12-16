@@ -1,66 +1,41 @@
-import { Router } from "express";
-import { db } from "../db.js";
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const connection = require("../database/connection");
 
-const router = Router();
+const router = express.Router();
 
-// ✅ GET cards
-router.get("/cards", (req, res) => {
-  const cards = db.prepare("SELECT * FROM cards").all();
-  res.json({ cards });
+const SECRET = "shark_secret";
+
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email e senha são obrigatórios" });
+  }
+
+  const sql = "SELECT * FROM admin WHERE email = ? AND password = ?";
+
+  connection.query(sql, [email, password], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erro no servidor" });
+    }
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: "Email ou senha inválidos" });
+    }
+
+    const token = jwt.sign(
+      { role: "admin", id: results[0].id },
+      SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      message: "Login realizado com sucesso",
+      token
+    });
+  });
 });
 
-// ✅ POST criar
-router.post("/cards", (req, res) => {
-  const {
-    img, nome, cientifico,
-    classificacao, caracteristicas,
-    habitat, populacao, curiosidades
-  } = req.body;
-
-  const stmt = db.prepare(`
-    INSERT INTO cards
-    (img, nome, cientifico, classificacao, caracteristicas, habitat, populacao, curiosidades)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const info = stmt.run(
-    img, nome, cientifico, classificacao,
-    caracteristicas, habitat, populacao, curiosidades
-  );
-
-  const card = db.prepare("SELECT * FROM cards WHERE id = ?")
-    .get(info.lastInsertRowid);
-
-  res.json({ card });
-});
-
-// ✅ PUT editar
-router.put("/cards/:id", (req, res) => {
-  const { id } = req.params;
-  const {
-    img, nome, cientifico,
-    classificacao, caracteristicas,
-    habitat, populacao, curiosidades
-  } = req.body;
-
-  db.prepare(`
-    UPDATE cards SET
-    img=?, nome=?, cientifico=?, classificacao=?,
-    caracteristicas=?, habitat=?, populacao=?, curiosidades=?
-    WHERE id=?
-  `).run(
-    img, nome, cientifico, classificacao,
-    caracteristicas, habitat, populacao, curiosidades, id
-  );
-
-  const card = db.prepare("SELECT * FROM cards WHERE id = ?").get(id);
-  res.json({ card });
-});
-
-// ✅ DELETE
-router.delete("/cards/:id", (req, res) => {
-  db.prepare("DELETE FROM cards WHERE id=?").run(req.params.id);
-  res.json({ message: "Card excluído" });
-});
-
-export default router;
+module.exports = router;
